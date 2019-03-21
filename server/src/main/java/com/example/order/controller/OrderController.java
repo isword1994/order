@@ -28,9 +28,10 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
     @PostMapping("/create")
-    public ResultVO<Map<String,String>> create(@Valid OrderForm orderForm,
-                           BindingResult bindingResult) {
+    public ResultVO<Map<String, String>> create(@Valid OrderForm orderForm,
+                                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.error("【创建订单】参数不正确，orderForm={}", orderForm);
             throw new OrderExcpetion(ResultEnum.PARAM_ERROR);
@@ -38,14 +39,14 @@ public class OrderController {
 
 
         OrderDTO orderDTO = OrderForm2OrderDTOConverter.convert(orderForm);
-        if(CollectionUtils.isEmpty(orderDTO.getOrderDetailList())){
+        if (CollectionUtils.isEmpty(orderDTO.getOrderDetailList())) {
             log.error("【创建订单】购物车信息为空");
             throw new OrderExcpetion(ResultEnum.CART_EMPTY);
         }
         OrderDTO result = orderService.create(orderDTO);
 
-        Map<String,String> map = new HashMap<>();
-        map.put("orderId",result.getOrderId());
+        Map<String, String> map = new HashMap<>();
+        map.put("orderId", result.getOrderId());
         return ResultVOUtil.success(map);
 
     }

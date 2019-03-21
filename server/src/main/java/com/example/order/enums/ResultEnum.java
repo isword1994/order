@@ -3,7 +3,7 @@ package com.example.order.enums;
 import lombok.Getter;
 
 @Getter
-public enum  ResultEnum {
+public enum ResultEnum {
     PARAM_ERROR(1, "参数错误"),
     CART_EMPTY(2, "购物车为空"),
     ORDER_NOT_EXIST(3, "订单不存在"),

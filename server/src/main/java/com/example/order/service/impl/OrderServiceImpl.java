@@ -43,13 +43,13 @@ public class OrderServiceImpl implements OrderService {
 
         //计算总价
         BigDecimal orderAmount = new BigDecimal(BigInteger.ZERO);
-        for(OrderDetail orderDetail:orderDTO.getOrderDetailList()){
-            for (ProductInfo productInfo:productInfoList){
-                if(productInfo.getProductId().equals(orderDetail.getProductId())){
+        for (OrderDetail orderDetail : orderDTO.getOrderDetailList()) {
+            for (ProductInfo productInfo : productInfoList) {
+                if (productInfo.getProductId().equals(orderDetail.getProductId())) {
                     orderAmount = productInfo.getProductPrice()
                             .multiply(new BigDecimal(orderDetail.getProductQuantity()))
                             .add(orderAmount);
-                    BeanUtils.copyProperties(productInfo,orderDetail);
+                    BeanUtils.copyProperties(productInfo, orderDetail);
                     orderDetail.setOrderId(orderId);
                     orderDetail.setDetailId(KeyUtil.genUniqueKey());
                     //订单详情入库
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
         //扣库存
         List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream()
-                .map(e -> new CartDTO(e.getProductId(),e.getProductQuantity()))
+                .map(e -> new CartDTO(e.getProductId(), e.getProductQuantity()))
                 .collect(Collectors.toList());
         productClient.decreaseStock(cartDTOList);
 
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
         //订单入库
         OrderMaster orderMaster = new OrderMaster();
 
-        BeanUtils.copyProperties(orderDTO,orderMaster);
+        BeanUtils.copyProperties(orderDTO, orderMaster);
         orderMaster.setOrderAmount(orderAmount);
         orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
         orderMaster.setPayStatus(PayStatusEnum.WAIT.getCode());
